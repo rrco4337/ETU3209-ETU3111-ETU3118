@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord | Banque Horizon</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@1.14.2/dist/full.css" rel="stylesheet" type="text/css" />
+    <style>
+        .bg-gradient-bank {
+            background: linear-gradient(135deg, #317AC1 0%, #1E3A8A 100%);
+        }
+        .btn-bank {
+            background-color: #317AC1;
+            transition: all 0.3s;
+        }
+        .btn-bank:hover {
+            background-color: #2563A8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .payment-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Barre de navigation -->
+    <div class="navbar bg-white shadow-sm">
+        <div class="flex-1">
+            <a class="btn btn-ghost normal-case text-xl text-blue-700">
+                <div class="w-8 h-8 rounded-full bg-gradient-bank flex items-center justify-center mr-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                Horizon Banque
+            </a>
+        </div>
+        <div class="flex-none gap-4">
+            <div class="dropdown dropdown-end">
+                <label tabindex="0" class="btn btn-ghost btn-circle">
+                    <div class="indicator">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
+                        <span class="badge badge-xs badge-primary indicator-item">3</span>
+                    </div>
+                </label>
+                <div tabindex="0" class="mt-3 card card-compact dropdown-content w-52 bg-white shadow">
+                    <div class="card-body">
+                        <span class="font-bold text-lg">3 Notifications</span>
+                        <div class="divider my-0"></div>
+                        <a class="text-sm hover:text-blue-600">Paiement reçu</a>
+                        <a class="text-sm hover:text-blue-600">Prêt approuvé</a>
+                        <a class="text-sm hover:text-blue-600">Nouvelle offre</a>
+                    </div>
+                </div>
+            </div>
+            <div class="dropdown dropdown-end">
+                <label tabindex="0" class="btn btn-ghost btn-circle avatar">
+                    <div class="w-10 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center font-bold">
+                        JD
+                    </div>
+                </label>
+                <ul tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-white rounded-box w-52">
+                    <li><a>Mon profil</a></li>
+                    <li><a>Paramètres</a></li>
+                    <li><a class="text-red-500">Déconnexion</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mx-auto px-4 py-6">
+        <!-- Section Solde et Comptes -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Carte Solde Principal -->
+            <div class="card bg-gradient-bank text-white shadow-xl">
+                <div class="card-body">
+                    <h2 class="card-title">Solde Principal</h2>
+                    <div class="flex items-end justify-between">
+                        <div>
+                            <p class="text-3xl font-bold">24,750.50 €</p>
+                            <p class="text-blue-100">Compte Courant •••• 4582</p>
+                        </div>
+                        <div class="badge badge-outline badge-sm">+2.5%</div>
+                    </div>
+                    <div class="card-actions justify-end mt-4">
+                        <button class="btn btn-sm btn-outline text-white">Voir détails</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Carte Épargne -->
+            <div class="card bg-white shadow-md">
+                <div class="card-body">
+                    <h2 class="card-title text-gray-800">Compte Épargne</h2>
+                    <div class="flex items-end justify-between">
+                        <div>
+                            <p class="text-2xl font-bold text-gray-800">8,320.75 €</p>
+                            <p class="text-gray-500">Livret A •••• 6721</p>
+                        </div>
+                        <div class="badge badge-primary badge-sm">+3%</div>
+                    </div>
+                    <div class="card-actions justify-end mt-4">
+                        <button class="btn btn-sm btn-bank text-white">Épargner</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Carte Crédit -->
+            <div class="card bg-white shadow-md">
+                <div class="card-body">
+                    <h2 class="card-title text-gray-800">Carte de Crédit</h2>
+                    <div class="flex items-end justify-between">
+                        <div>
+                            <p class="text-2xl font-bold text-gray-800">1,245.30 €</p>
+                            <p class="text-gray-500">Visa Platinum •••• 9823</p>
+                        </div>
+                        <div class="badge badge-secondary badge-sm">Limite: 5,000€</div>
+                    </div>
+                    <div class="card-actions justify-end mt-4">
+                        <button class="btn btn-sm btn-outline btn-primary">Payer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Prêts et Paiements -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Section Types de Prêts -->
+            <div>
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Nos Offres de Prêts</h2>
+                <div class="space-y-4">
+                    <!-- Prêt Immobilier -->
+                    <div class="card bg-white shadow-sm hover:shadow-md transition-shadow">
+                        <div class="card-body">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="card-title text-gray-800">Prêt Immobilier</h3>
+                                    <p class="text-gray-600">Taux à partir de 2.05%*</p>
+                                </div>
+                                <div class="badge badge-primary">Populaire</div>
+                            </div>
+                            <div class="divider my-2"></div>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <p class="text-gray-500">Durée max</p>
+                                    <p class="font-semibold">25 ans</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-500">Montant max</p>
+                                    <p class="font-semibold">500,000 €</p>
+                                </div>
+                            </div>
+                            <div class="card-actions justify-end mt-4">
+                                <button class="btn btn-sm btn-bank text-white">Demander</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Prêt Personnel -->
+                    <div class="card bg-white shadow-sm hover:shadow-md transition-shadow">
+                        <div class="card-body">
+                            <h3 class="card-title text-gray-800">Prêt Personnel</h3>
+                            <p class="text-gray-600">Taux à partir de 3.49%*</p>
+                            <div class="divider my-2"></div>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <p class="text-gray-500">Durée max</p>
+                                    <p class="font-semibold">7 ans</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-500">Montant max</p>
+                                    <p class="font-semibold">75,000 €</p>
+                                </div>
+                            </div>
+                            <div class="card-actions justify-end mt-4">
+                                <button class="btn btn-sm btn-bank text-white">Demander</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Prêt Auto -->
+                    <div class="card bg-white shadow-sm hover:shadow-md transition-shadow">
+                        <div class="card-body">
+                            <h3 class="card-title text-gray-800">Prêt Auto</h3>
+                            <p class="text-gray-600">Taux à partir de 1.89%*</p>
+                            <div class="divider my-2"></div>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <p class="text-gray-500">Durée max</p>
+                                    <p class="font-semibold">5 ans</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-500">Montant max</p>
+                                    <p class="font-semibold">40,000 €</p>
+                                </div>
+                            </div>
+                            <div class="card-actions justify-end mt-4">
+                                <button class="btn btn-sm btn-bank text-white">Demander</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section Paiements Restants -->
+            <div>
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-gray-800">Paiements à effectuer</h2>
+                    <button class="btn btn-sm btn-ghost text-blue-600">Voir tout</button>
+                </div>
+                <div class="space-y-4">
+                    <!-- Paiement 1 -->
+                    <div class="card bg-white payment-card shadow-sm transition-all">
+                        <div class="card-body p-4">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">Prêt Immobilier</h3>
+                                    <p class="text-sm text-gray-600">Échéance: 15/08/2023</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-bold text-gray-800">450.00 €</p>
+                                    <div class="badge badge-warning badge-sm">En attente</div>
+                                </div>
+                            </div>
+                            <div class="card-actions justify-end mt-2">
+                                <button class="btn btn-sm btn-bank text-white">Payer maintenant</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Paiement 2 -->
+                    <div class="card bg-white payment-card shadow-sm transition-all">
+                        <div class="card-body p-4">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">Carte de Crédit</h3>
+                                    <p class="text-sm text-gray-600">Échéance: 05/09/2023</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-bold text-gray-800">1,245.30 €</p>
+                                    <div class="badge badge-warning badge-sm">Minimum: 62€</div>
+                                </div>
+                            </div>
+                            <div class="card-actions justify-end mt-2">
+                                <button class="btn btn-sm btn-bank text-white">Payer maintenant</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Paiement 3 -->
+                    <div class="card bg-white payment-card shadow-sm transition-all">
+                        <div class="card-body p-4">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">Prêt Auto</h3>
+                                    <p class="text-sm text-gray-600">Échéance: 22/08/2023</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-bold text-gray-800">275.50 €</p>
+                                    <div class="badge badge-success badge-sm">Prélèvement auto</div>
+                                </div>
+                            </div>
+                            <div class="card-actions justify-end mt-2">
+                                <button class="btn btn-sm btn-outline btn-primary">Modifier</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Graphique simple -->
+                    <div class="card bg-white shadow-sm mt-6">
+                        <div class="card-body">
+                            <h3 class="card-title text-gray-800">Historique des paiements</h3>
+                            <div class="h-40 flex items-center justify-center">
+                                <div class="w-full bg-gray-100 rounded-full h-4">
+                                    <div class="bg-blue-600 h-4 rounded-full" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            <div class="flex justify-between text-sm text-gray-600 mt-2">
+                                <span>0 €</span>
+                                <span>2,500 €</span>
+                            </div>
+                            <div class="text-center mt-2">
+                                <p class="text-sm text-gray-600">85% des paiements effectués à temps</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer p-10 bg-gray-100 text-gray-600 mt-12">
+        <div>
+            <div class="w-10 h-10 rounded-full bg-gradient-bank flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <p class="mt-2">Horizon Banque<br>Services bancaires depuis 1987</p>
+        </div> 
+        <div>
+            <span class="footer-title">Services</span> 
+            <a class="link link-hover">Comptes bancaires</a> 
+            <a class="link link-hover">Prêts</a> 
+            <a class="link link-hover">Cartes</a> 
+            <a class="link link-hover">Épargne</a>
+        </div> 
+        <div>
+            <span class="footer-title">Contact</span> 
+            <a class="link link-hover">Service client: 0800 123 456</a> 
+            <a class="link link-hover">Urgences: 0800 987 654</a> 
+            <a class="link link-hover">contact@horizon-banque.fr</a>
+        </div> 
+        <div>
+            <span class="footer-title">Légal</span> 
+            <a class="link link-hover">Conditions d'utilisation</a> 
+            <a class="link link-hover">Politique de confidentialité</a> 
+            <a class="link link-hover">Informations légales</a>
+        </div>
+    </footer>
+</body>
+</html>
