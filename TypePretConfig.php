@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestion des Types de Prêt</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    input, button { margin: 5px; padding: 5px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #f2f2f2; }
+    .number-input { width: 80px; }
+  </style>
+</head>
+<body>
+
+  <h1>Gestion des Types de Prêt</h1>
+
+  <div>
+    <input type="hidden" id="idType">
+    <input type="text" id="libelle" placeholder="Libellé">
+    <input type="number" id="montant" placeholder="Montant" class="number-input" step="0.01">
+    <input type="number" id="taux" placeholder="Taux (%)" class="number-input" step="0.01">
+    <input type="number" id="duree" placeholder="Durée (mois)" class="number-input">
+    <button onclick="ajouterOuModifierTypePret()">Ajouter / Modifier</button>
+  </div>
+
+  <table id="table-types-pret">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Libellé</th>
+        <th>Montant</th>
+        <th>Taux (%)</th>
+        <th>Durée max (mois)</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const apiBase = "http://localhost/ETU3209-ETU3111-ETU3118/ws";
+
+    function ajax(method, url, data, callback) {
+      const xhr = new XMLHttpRequest();
+      xhr.open(method, apiBase + url, true);
+      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          callback(JSON.parse(xhr.responseText));
+        }else{
+          
+        console.error("Erreur AJAX", xhr.status, xhr.responseText);
+        }
+      };
+      xhr.send(data);
+    }
+
+    function chargerTypesPret() {
+      ajax("GET", "/type-pret", null, (data) => {
+        const tbody = document.querySelector("#table-types-pret tbody");
+        tbody.innerHTML = "";
+        data.forEach(t => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${t.idType}</td>
+            <td>${t.libelle}</td>
+            <td>${Number(t.montant).toFixed(2)}</td>
+            <td>${Number(t.taux).toFixed(2)}</td>
+            <td>${Number(t.duree_mois_max).toFixed(2)}</td>
+            <td>
+              <button onclick='remplirFormulaireTypePret(${JSON.stringify(t)})'>✏️</button>
+              <button onclick='supprimerTypePret(${t.idType})'>🗑️</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      });
+    }
+
+    function ajouterOuModifierTypePret() {
+      const idType = document.getElementById("idType").value;
+      const libelle = document.getElementById("libelle").value;
+      const montant = document.getElementById("montant").value;
+      const taux = document.getElementById("taux").value;
+      const duree = document.getElementById("duree").value;
+
+const data = 
+  `libelle=${encodeURIComponent(libelle)}&` +
+  `montant=${encodeURIComponent(montant)}&` +
+  `taux=${encodeURIComponent(taux)}&` +
+  `duree_mois_max=${encodeURIComponent(duree)}`;
+
+      if (idType) {
+        ajax("PUT", `/type-pret/${idType}`, data, () => {
+          resetFormTypePret();
+          chargerTypesPret();
+        });
+      } else {
+        ajax("POST", "/type-pret", data, () => {
+          resetFormTypePret();
+          chargerTypesPret();
+        });
+      }
+    }
+
+    function remplirFormulaireTypePret(t) {
+      document.getElementById("idType").value = t.idType;
+      document.getElementById("libelle").value = t.libelle;
+      document.getElementById("montant").value = t.montant;
+      document.getElementById("taux").value = t.taux;
+      document.getElementById("duree").value = t.duree_mois_max;
+    }
+
+    function supprimerTypePret(idType) {
+      if (confirm("Supprimer ce type de prêt ?")) {
+        ajax("DELETE", `/type-pret/${idType}`, null, () => {
+          chargerTypesPret();
+        });
+      }
+    }
+
+    function resetFormTypePret() {
+      document.getElementById("idType").value = "";
+      document.getElementById("libelle").value = "";
+      document.getElementById("montant").value = "";
+      document.getElementById("taux").value = "";
+      document.getElementById("duree").value = "";
+    }
+
+    chargerTypesPret();
+  </script>
+
+</body>
+</html>
