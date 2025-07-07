@@ -88,13 +88,28 @@ CREATE TABLE EF_Pret_Client (
     FOREIGN KEY (idTypePret) REFERENCES EF_TypePret(idType),
     FOREIGN KEY (idClient) REFERENCES EF_Client(idClient)
 );
+ALTER TABLE EF_Pret_Client
+ADD COLUMN isApproved BOOLEAN DEFAULT FALSE;
 
+CREATE TABLE Departement (
+    idDepartement INT PRIMARY KEY AUTO_INCREMENT,  -- identifiant unique pour le département
+    NomDepartement VARCHAR(255) NOT NULL  -- nom du département (ex: Finance)
+);
 -- TABLE : EF_Admin
 CREATE TABLE EF_Admin (
     idAdmin INT PRIMARY KEY AUTO_INCREMENT,
     mail VARCHAR(100) NOT NULL,
     motdepasse VARCHAR(255) NOT NULL
 );
+ALTER TABLE EF_Admin
+ADD COLUMN idDepartement INT,
+ADD CONSTRAINT fk_departement_admin FOREIGN KEY (idDepartement) REFERENCES Departement(idDepartement);
+
+
+INSERT INTO Departement (NomDepartement) VALUES
+('Finance'),
+('Commercial');
+
 
 <<<<<<< HEAD
 insert into EF_Admin(mail,motdepasse) values('admin@gmail.com','admin');
