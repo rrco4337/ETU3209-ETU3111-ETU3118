@@ -33,4 +33,6 @@ class Etudiant {
         $stmt = $db->prepare("DELETE FROM etudiant WHERE id = ?");
         $stmt->execute([$id]);
     }
+
+    
 }

@@ -74,3 +74,4 @@ CREATE TABLE EF_Admin (
     motdepasse VARCHAR(255) NOT NULL
 );
 
+insert into EF_Admin(mail,motdepasse) values('admin@gmail.com','admin');
