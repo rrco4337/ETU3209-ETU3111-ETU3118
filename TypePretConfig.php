@@ -181,24 +181,8 @@
     </div>
   </main>
 
-  <!-- Footer -->
-  <footer class="bg-gray-100 border-t mt-12">
-    <div class="container mx-auto px-4 py-6">
-      <div class="flex flex-col md:flex-row justify-between items-center">
-        <div class="flex items-center space-x-2 mb-4 md:mb-0">
-          <div class="w-8 h-8 rounded-full bg-gradient-bank flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <span class="font-bold">Horizon Banque</span>
-        </div>
-        <div class="text-sm text-gray-600">
-          &copy; 2023 Horizon Banque. Tous droits réservés.
-        </div>
-      </div>
-    </div>
-  </footer>
+  <?php include('footer.php'); ?>
+
 
   <script>
     const apiBase = "http://localhost/tp-flightphp-crud/ws";

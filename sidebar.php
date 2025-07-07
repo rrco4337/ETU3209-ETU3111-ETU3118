@@ -93,11 +93,11 @@
               <i class="fas fa-user mr-2"></i> Comptes <i class="fas fa-chevron-down ml-1 text-xs"></i>
             </a>
             <div class="dropdown-menu absolute left-0 mt-2 w-48 bg-white text-gray-800 rounded-md shadow-xl py-1 z-50">
-              <a href="#" class="block px-4 py-2 hover:bg-blue-50 hover:text-blue-600">
-                <i class="fas fa-piggy-bank mr-2"></i> Comptes Courants
+              <a href="TypePretConfig.php" class="block px-4 py-2 hover:bg-blue-50 hover:text-blue-600">
+                <i class="fas fa-piggy-bank mr-2"></i> Type prêt financier
               </a>
-              <a href="#" class="block px-4 py-2 hover:bg-blue-50 hover:text-blue-600">
-                <i class="fas fa-coins mr-2"></i> Comptes Épargne
+              <a href="FondFinancierConfig.php" class="block px-4 py-2 hover:bg-blue-50 hover:text-blue-600">
+                <i class="fas fa-coins mr-2"></i> fond financier
               </a>
               <a href="#" class="block px-4 py-2 hover:bg-blue-50 hover:text-blue-600">
                 <i class="fas fa-business-time mr-2"></i> Comptes Professionnels
