@@ -7,4 +7,7 @@ require 'routes/TypePret_routes.php';
 require 'routes/FondFinancier_routes.php';
 require 'routes/Pret_routes.php';
 require 'routes/Client_routes.php';
+require 'routes/SuiviPret_routes.php';
+
+
 Flight::start();

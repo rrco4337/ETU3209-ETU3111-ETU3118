@@ -15,5 +15,9 @@ class PretController {
         Flight::json(['message' => 'Prêt créé avec succès']);
     }
 }
+public static function getNonApproved() {
+    $prets = Pret::findNonApproved();
+    Flight::json($prets);
+}
 
 }

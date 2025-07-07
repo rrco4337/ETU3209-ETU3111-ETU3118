@@ -5,7 +5,9 @@ require_once __DIR__ . '/../helpers/Utils.php';
 
 
 class AdminController {
-   public static function login() {
+  public static function login() {
+        session_start(); // démarrer la session
+
         $data = Flight::request()->data;
 
         $mail = $data->mail ?? '';
@@ -19,6 +21,10 @@ class AdminController {
         $admin = Admin::findByMailandMDP($mail, $mdp);
 
         if ($admin) {
+            // Stocker idAdmin et idDepartement en session
+            $_SESSION['idAdmin'] = $admin['idAdmin'];
+            $_SESSION['idDepartement'] = $admin['idDepartement'];
+
             Flight::json(['success' => true, 'admin' => $admin]);
         } else {
             Flight::json(['success' => false, 'message' => 'Identifiants invalides'], 401);

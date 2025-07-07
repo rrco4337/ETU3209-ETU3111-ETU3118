@@ -63,15 +63,17 @@ CREATE TABLE EF_Pret_Client (
     status INT DEFAULT 0 CHECK (status IN (0, 1, 2, 3, 4)),
     date_debut_pret DATE DEFAULT CURRENT_DATE,
     montant_paye DECIMAL(12,2) DEFAULT 0,
-    montant_restant DECIMAL(12,2) DEFAULT 0,
+    montant_total DECIMAL(12,2) DEFAULT 0,
     date_maj DATE DEFAULT CURRENT_DATE,
     FOREIGN KEY (idTypePret) REFERENCES EF_TypePret(idType),
     FOREIGN KEY (idClient) REFERENCES EF_Client(idClient)
 );
 ALTER TABLE EF_Pret_Client
 ADD COLUMN isApproved BOOLEAN DEFAULT FALSE;
+ALTER TABLE EF_Pret_Client ADD COLUMN interet_total DECIMAL(12,2) DEFAULT 0;
 
-CREATE TABLE Departement (
+
+CREATE TABLE EF_Departement (
     idDepartement INT PRIMARY KEY AUTO_INCREMENT,  -- identifiant unique pour le département
     NomDepartement VARCHAR(255) NOT NULL  -- nom du département (ex: Finance)
 );
@@ -83,12 +85,27 @@ CREATE TABLE EF_Admin (
 );
 ALTER TABLE EF_Admin
 ADD COLUMN idDepartement INT,
-ADD CONSTRAINT fk_departement_admin FOREIGN KEY (idDepartement) REFERENCES Departement(idDepartement);
+ADD CONSTRAINT fk_departement_admin FOREIGN KEY (idDepartement) REFERENCES EF_Departement(idDepartement);
 
 
-INSERT INTO Departement (NomDepartement) VALUES
+INSERT INTO EF_Departement (NomDepartement) VALUES
 ('Finance'),
 ('Commercial');
 
 
+
+
 insert into EF_Admin(mail,motdepasse) values('admin@gmail.com','admin');
+
+CREATE TABLE EF_SuiviPret (
+    idSuivi INT AUTO_INCREMENT PRIMARY KEY,
+    idPret INT NOT NULL,
+    idClient INT NOT NULL,
+    montant_attendu DECIMAL(12,2) NOT NULL, -- montant dû à cette échéance (avec intérêt)
+    montant_paye DECIMAL(12,2) DEFAULT 0,   -- montant payé à cette échéance
+    interet_paye DECIMAL(12,2) DEFAULT 0,   -- part d'intérêt remboursée
+    date_debut_pret DATE NOT NULL,
+    date_prevu_payement DATE NOT NULL,
+    FOREIGN KEY (idPret) REFERENCES EF_Pret_Client(idPret),
+    FOREIGN KEY (idClient) REFERENCES EF_Client(idClient)
+);
