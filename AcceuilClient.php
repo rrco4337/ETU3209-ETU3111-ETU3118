@@ -79,11 +79,11 @@
             <!-- Carte Solde Principal -->
             <div class="card bg-gradient-bank text-white shadow-xl">
                 <div class="card-body">
-                    <h2 class="card-title">Solde Principal</h2>
+                    <h2 class="card-title">Solde du compte</h2>
                     <div class="flex items-end justify-between">
                         <div>
                             <p class="text-3xl font-bold">24,750.50 €</p>
-                            <p class="text-blue-100">Compte Courant •••• 4582</p>
+                            <p class="text-blue-100">Compte Courant **** 4582</p>
                         </div>
                         <div class="badge badge-outline badge-sm">+2.5%</div>
                     </div>
@@ -96,16 +96,16 @@
             <!-- Carte Épargne -->
             <div class="card bg-white shadow-md">
                 <div class="card-body">
-                    <h2 class="card-title text-gray-800">Compte Épargne</h2>
+                    <h2 class="card-title text-gray-800">Reste à payer</h2>
                     <div class="flex items-end justify-between">
                         <div>
                             <p class="text-2xl font-bold text-gray-800">8,320.75 €</p>
-                            <p class="text-gray-500">Livret A •••• 6721</p>
+                            <p class="text-gray-500"></p>
                         </div>
-                        <div class="badge badge-primary badge-sm">+3%</div>
+                        <div class="badge badge-primary badge-sm">TT</div>
                     </div>
                     <div class="card-actions justify-end mt-4">
-                        <button class="btn btn-sm btn-bank text-white">Épargner</button>
+                        <button class="btn btn-sm btn-bank text-white">liquider</button>
                     </div>
                 </div>
             </div>
@@ -113,16 +113,16 @@
             <!-- Carte Crédit -->
             <div class="card bg-white shadow-md">
                 <div class="card-body">
-                    <h2 class="card-title text-gray-800">Carte de Crédit</h2>
+                    <h2 class="card-title text-gray-800">Total payer</h2>
                     <div class="flex items-end justify-between">
                         <div>
                             <p class="text-2xl font-bold text-gray-800">1,245.30 €</p>
-                            <p class="text-gray-500">Visa Platinum •••• 9823</p>
+                            <p class="text-gray-500"></p>
                         </div>
                         <div class="badge badge-secondary badge-sm">Limite: 5,000€</div>
                     </div>
                     <div class="card-actions justify-end mt-4">
-                        <button class="btn btn-sm btn-outline btn-primary">Payer</button>
+                        <button class="btn btn-sm btn-outline btn-primary">Voir détails</button>
                     </div>
                 </div>
             </div>
@@ -131,6 +131,7 @@
         <!-- Section Prêts et Paiements -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <!-- Section Types de Prêts -->
+
             <div>
                 <h2 class="text-xl font-bold text-gray-800 mb-4">Nos Offres de Prêts</h2>
                 <div class="space-y-4">
@@ -156,7 +157,7 @@
                                 </div>
                             </div>
                             <div class="card-actions justify-end mt-4">
-                                <button class="btn btn-sm btn-bank text-white">Demander</button>
+                                <button class="btn btn-sm btn-bank text-white">Voir les détails</button>
                             </div>
                         </div>
                     </div>
@@ -233,62 +234,8 @@
                         </div>
                     </div>
 
-                    <!-- Paiement 2 -->
-                    <div class="card bg-white payment-card shadow-sm transition-all">
-                        <div class="card-body p-4">
-                            <div class="flex justify-between items-center">
-                                <div>
-                                    <h3 class="font-semibold text-gray-800">Carte de Crédit</h3>
-                                    <p class="text-sm text-gray-600">Échéance: 05/09/2023</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="font-bold text-gray-800">1,245.30 €</p>
-                                    <div class="badge badge-warning badge-sm">Minimum: 62€</div>
-                                </div>
-                            </div>
-                            <div class="card-actions justify-end mt-2">
-                                <button class="btn btn-sm btn-bank text-white">Payer maintenant</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Paiement 3 -->
-                    <div class="card bg-white payment-card shadow-sm transition-all">
-                        <div class="card-body p-4">
-                            <div class="flex justify-between items-center">
-                                <div>
-                                    <h3 class="font-semibold text-gray-800">Prêt Auto</h3>
-                                    <p class="text-sm text-gray-600">Échéance: 22/08/2023</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="font-bold text-gray-800">275.50 €</p>
-                                    <div class="badge badge-success badge-sm">Prélèvement auto</div>
-                                </div>
-                            </div>
-                            <div class="card-actions justify-end mt-2">
-                                <button class="btn btn-sm btn-outline btn-primary">Modifier</button>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- Graphique simple -->
-                    <div class="card bg-white shadow-sm mt-6">
-                        <div class="card-body">
-                            <h3 class="card-title text-gray-800">Historique des paiements</h3>
-                            <div class="h-40 flex items-center justify-center">
-                                <div class="w-full bg-gray-100 rounded-full h-4">
-                                    <div class="bg-blue-600 h-4 rounded-full" style="width: 85%"></div>
-                                </div>
-                            </div>
-                            <div class="flex justify-between text-sm text-gray-600 mt-2">
-                                <span>0 €</span>
-                                <span>2,500 €</span>
-                            </div>
-                            <div class="text-center mt-2">
-                                <p class="text-sm text-gray-600">85% des paiements effectués à temps</p>
-                            </div>
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -312,10 +259,10 @@
             <a class="link link-hover">Épargne</a>
         </div> 
         <div>
-            <span class="footer-title">Contact</span> 
-            <a class="link link-hover">Service client: 0800 123 456</a> 
-            <a class="link link-hover">Urgences: 0800 987 654</a> 
-            <a class="link link-hover">contact@horizon-banque.fr</a>
+            <span class="footer-title">Proprietaires</span> 
+            <a class="link link-hover">Fanitsy ETU3111</a> 
+            <a class="link link-hover">Stanley ETU003118</a> 
+            <a class="link link-hover">Cindy ETU003209</a>
         </div> 
         <div>
             <span class="footer-title">Légal</span> 
