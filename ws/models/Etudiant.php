@@ -27,7 +27,7 @@ class Etudiant {
         $stmt = $db->prepare("UPDATE etudiant SET nom = ?, prenom = ?, email = ?, age = ? WHERE id = ?");
         $stmt->execute([$data->nom, $data->prenom, $data->email, $data->age, $id]);
     }
-
+    
     public static function delete($id) {
         $db = getDB();
         $stmt = $db->prepare("DELETE FROM etudiant WHERE id = ?");
