@@ -4,11 +4,17 @@ require_once __DIR__ . '/../db.php';
 class TypePret {
 
   
-    public static function create($libelle, $montant, $taux, $duree_mois_max) {
-        $db = getDB();
-        $stmt = $db->prepare("INSERT INTO EF_TypePret (libelle, montant, taux, duree_mois_max) VALUES (?, ?, ?, ?)");
-        return $stmt->execute([$libelle, $montant, $taux, $duree_mois_max]);
-    }
+   public static function create( $data) {
+    $db = getDB();
+    $stmt = $db->prepare("INSERT INTO EF_TypePret (libelle, montant, taux, duree_mois_max) VALUES (?, ?, ?, ?)");
+    return $stmt->execute([
+        $data->libelle,
+        $data->montant,
+        $data->taux,
+        $data->duree_mois_max
+    ]);
+}
+
 
  
     public static function findById($idType) {
@@ -26,10 +32,15 @@ class TypePret {
     }
 
    
-    public static function update($idType, $libelle, $montant, $taux, $duree_mois_max) {
+    public static function update($id,$data) {
         $db = getDB();
+        $libelle = $data->libelle;
+        $montant = $data->montant;
+        $taux = $data->taux;
+        $duree_mois_max = $data->duree_mois_max;
         $stmt = $db->prepare("UPDATE EF_TypePret SET libelle = ?, montant = ?, taux = ?, duree_mois_max = ? WHERE idType = ?");
-        return $stmt->execute([$libelle, $montant, $taux, $duree_mois_max, $idType]);
+        return $stmt->execute([$libelle, $montant, $taux, $duree_mois_max, $id]);
+       
     }
 
   

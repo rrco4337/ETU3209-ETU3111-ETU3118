@@ -2,12 +2,10 @@
 require_once __DIR__ . '/../models/TypePret.php';
 require_once __DIR__ . '/../helpers/Utils.php';
 
-
-
 class TypePretController {
     public static function getAll() {
-        $TypePrets = TypePret::findAll();
-        Flight::json($TypePrets);
+        $TypePret = TypePret::findAll();
+        Flight::json($TypePret);
     }
 
     public static function getById($id) {
@@ -22,11 +20,22 @@ class TypePretController {
         Flight::json(['message' => 'Étudiant ajouté', 'id' => $id]);
     }
 
-    public static function update($id) {
-        $data = Flight::request()->data;
-        TypePret::update($id, $data);
-        Flight::json(['message' => 'Étudiant modifié']);
+   public static function update($id) {
+    // Lire le corps brut
+    parse_str(file_get_contents("php://input"), $put_vars);
+
+    // Transformer en objet pour correspondre à ta méthode update
+    $data = (object) $put_vars;
+
+    // Appeler la méthode update dans le modèle
+    $result = TypePret::update($id, $data);
+
+    if ($result) {
+        Flight::json(['message' => 'TypePret modifié avec succès']);
+    } else {
+        Flight::json(['message' => 'Erreur lors de la modification'], 500);
     }
+}
 
     public static function delete($id) {
         TypePret::delete($id);

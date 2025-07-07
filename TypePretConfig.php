@@ -49,6 +49,9 @@
       xhr.onreadystatechange = () => {
         if (xhr.readyState === 4 && xhr.status === 200) {
           callback(JSON.parse(xhr.responseText));
+        }else{
+          
+        console.error("Erreur AJAX", xhr.status, xhr.responseText);
         }
       };
       xhr.send(data);
@@ -63,9 +66,9 @@
           tr.innerHTML = `
             <td>${t.idType}</td>
             <td>${t.libelle}</td>
-            <td>${t.montant.toFixed(2)}</td>
-            <td>${t.taux.toFixed(2)}</td>
-            <td>${t.duree_mois_max}</td>
+            <td>${Number(t.montant).toFixed(2)}</td>
+            <td>${Number(t.taux).toFixed(2)}</td>
+            <td>${Number(t.duree_mois_max).toFixed(2)}</td>
             <td>
               <button onclick='remplirFormulaireTypePret(${JSON.stringify(t)})'>✏️</button>
               <button onclick='supprimerTypePret(${t.idType})'>🗑️</button>
@@ -83,7 +86,11 @@
       const taux = document.getElementById("taux").value;
       const duree = document.getElementById("duree").value;
 
-      const data = `libelle=${encodeURIComponent(libelle)}&montant=${montant}&taux=${taux}&duree_mois_max=${duree}`;
+const data = 
+  `libelle=${encodeURIComponent(libelle)}&` +
+  `montant=${encodeURIComponent(montant)}&` +
+  `taux=${encodeURIComponent(taux)}&` +
+  `duree_mois_max=${encodeURIComponent(duree)}`;
 
       if (idType) {
         ajax("PUT", `/type-pret/${idType}`, data, () => {

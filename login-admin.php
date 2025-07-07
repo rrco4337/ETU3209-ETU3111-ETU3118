@@ -61,7 +61,7 @@ async function handleLogin(e) {
         }
 
         if (data.success) {
-            window.location.href = '/dashboard';
+            window.location.href = '/ETU3209-ETU3111-ETU3118/TypePretConfig.php';
         } else {
             messageDiv.style.color = 'red';
             messageDiv.textContent = data.message || 'Identifiants incorrects';
