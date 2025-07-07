@@ -86,7 +86,7 @@
           }
 
           setTimeout(() => {
-          window.location.href = 'Accueil.html';
+          window.location.href = '/ETU3209-ETU3111-ETU3118/dashboard_client.php';
  // change cette URL selon ton projet
           }, 1500);
         },

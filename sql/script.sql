@@ -78,16 +78,34 @@ CREATE TABLE EF_Admin (
     motdepasse VARCHAR(255) NOT NULL
 );
 
+CREATE TABLE EF_Payement (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_client INT NOT NULL,
+    id_type_pret INT NOT NULL,
+    mois VARCHAR(20) NOT NULL, -- Ex: '2025-07' ou 'Juillet 2025'
+    montant DECIMAL(10,2) NOT NULL,
+    date_paiement DATETIME DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (id_client) REFERENCES EF_Client(idClient),
+    FOREIGN KEY (id_type_pret) REFERENCES EF_TypePret(idType)
+);
+
+
 INSERT INTO EF_Client (nom, mail, password, datenaissance, profession, salaire_actuel, adresse, telephone, solde)
 VALUES 
 ('Martin', 'elise.martin@email.com',
  '123',
  '1995-08-14', 'Graphiste', 38000.00, '25 Rue des Arts, 75003 Paris', '+33611223344', 1250.50);
-
-('Lucas Dupont', 'lucas.dupont@email.com',
- '$2y$10$ZIjhfEsH3OVyV1fpUTufG.yElcWWNKIkZAPBoTeZWkznkH1H6LG9C',
- '1990-06-21', 'Développeur', 45000.00, '12 Avenue des Champs, 75008 Paris', '+33699887766', 2450.00),
-
-('Sophie Bernard', 'sophie.bernard@email.com',
- '$2y$10$ZIjhfEsH3OVyV1fpUTufG.yElcWWNKIkZAPBoTeZWkznkH1H6LG9C',
- '1988-03-10', 'Comptable', 42000.00, '7 Rue Lafayette, 69001 Lyon', '+33712345678', 980.75);
+INSERT INTO EF_TypePret (libelle, montant, taux, duree_mois_max)
+VALUES 
+('Prêt Personnel', 5000.00, 5.0, 12),
+('Prêt Étudiant', 3000.00, 2.5, 24);
+INSERT INTO EF_Fond_Financier (solde_initiale, solde_final, solde_en_cours)
+VALUES (100000.00, 95000.00, 95000.00);
+INSERT INTO EF_Pret_Client (idTypePret, idClient, status, date_debut_pret, montant_paye, montant_restant)
+VALUES 
+(1, 1, 1, '2025-06-01', 1000.00, 4000.00);
+INSERT INTO EF_Payement (id_client, id_type_pret, mois, montant, date_paiement)
+VALUES 
+(1, 1, '2025-06', 500.00, '2025-06-15 10:00:00'),
+(1, 1, '2025-07', 500.00, '2025-07-05 09:30:00');
