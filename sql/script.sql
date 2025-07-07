@@ -17,13 +17,15 @@ USE tp_flight;
 -- TABLE : EF_Fond_Financier
 -- TABLE : EF_Fond_Financier
 CREATE TABLE EF_Fond_Financier (
-    idFond INT PRIMARY KEY AUTO_INCREMENT,
+    idFond INT NOT NULL AUTO_INCREMENT,
+    date_creation DATE DEFAULT CURRENT_DATE,
+    annee INT GENERATED ALWAYS AS (YEAR(date_creation)) STORED, -- calculé à partir de la date
     solde_initiale DECIMAL(12,2) NOT NULL DEFAULT 0,
     solde_final DECIMAL(12,2) DEFAULT 0,
-    solde_en_cours DECIMAL(12,2) DEFAULT 0,
-    date_creation DATE DEFAULT CURRENT_DATE
+    solde_en_cours DECIMAL(12,2) GENERATED ALWAYS AS (solde_initiale - solde_final) STORED, -- calculé
+    PRIMARY KEY (idFond),
+    INDEX idx_annee (annee) -- facultatif mais utile
 );
-
 -- TABLE : EF_TypePret
 CREATE TABLE EF_TypePret (
     idType INT PRIMARY KEY AUTO_INCREMENT,
