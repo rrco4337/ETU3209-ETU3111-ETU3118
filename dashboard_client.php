@@ -91,9 +91,7 @@
         <p class="text-gray-600" id="welcome">Bienvenue !</p>
       </div>
       <div class="flex space-x-2">
-        <button class="btn btn-sm btn-outline">
-          <i class="fas fa-file-export mr-2"></i> Exporter
-        </button>
+        
       </div>
     </div>
 
@@ -412,13 +410,17 @@
                         ${parseFloat(p.montant_restant) === 0 ? 'Terminé' : 'En cours'}
                       </span>
                     </td>
-                    <td>
-                      <button onclick="ouvrirForm(${p.idPret}, '${type}')" 
-                              class="btn btn-xs btn-bank text-white" 
-                              ${parseFloat(p.montant_restant) === 0 ? 'disabled' : ''}>
-                        <i class="fas fa-money-bill-wave mr-1"></i> Payer
-                      </button>
-                    </td>
+                    <td class="space-x-1">
+  <button onclick="ouvrirForm(${p.idPret}, '${type}')" 
+          class="btn btn-xs btn-bank text-white" 
+          ${parseFloat(p.montant_restant) === 0 ? 'disabled' : ''}>
+    <i class="fas fa-money-bill-wave mr-1"></i> Payer
+  </button>
+  <button onclick="exporterSuiviPDF(${p.idPret})" class="btn btn-xs btn-outline">
+    <i class="fas fa-file-pdf mr-1 text-red-600"></i> PDF
+  </button>
+</td>
+
                   </tr>
                 `).join("")}
               </tbody>
@@ -428,7 +430,14 @@
         container.appendChild(card);
       }
     }
+    // Fonction pour exporter le suivi en PDF
+    function exporterSuiviPDF(idPret) {
+        if (!user || !user.idClient) return;
 
+  // Rediriger vers un script PHP qui génère le PDF
+  const url = `${apiBase}/suivi/export-pdf.php?idPret=${idPret}&idClient=${user.idClient}`;
+  window.open(url, "_blank");
+}
     // Fonctions utilitaires
     function formatCurrency(amount) {
       return parseFloat(amount || 0).toLocaleString('fr-FR') + ' Ar';
