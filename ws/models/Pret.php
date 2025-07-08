@@ -22,26 +22,33 @@ public static function create($data) {
     $t = $typePret["taux"] / 100;
     $d = $typePret["duree_mois_max"];
     $salaire = $client["salaire_actuel"];
+    $tauxAssurance = $typePret["taux_assurance"] / 100;
 
-    // 4. Intérêt simple
+    // 4. Intérêt simple + assurance
     $interet = $C * $t * ($d / 12);
-    $total_a_rembourser = $C + $interet;
+    $assuranceTotale = $C * $tauxAssurance;
+    $total_a_rembourser = $C + $interet + $assuranceTotale;
+
     $capacite = $salaire * $d;
+
 
     // 5. Vérification capacité de remboursement
     $isApproved = ($capacite >= $total_a_rembourser) ? 1 : 0;
 
     if ($isApproved) {
+         file_put_contents("log.txt", "Capacité: $capacite\nTotal: $total_a_rembourser\n", FILE_APPEND);
         $stmt = $db->prepare("INSERT INTO EF_Pret_Client (
             idTypePret, idClient, status, date_debut_pret,
-            montant_paye, montant_restant, interet_total, date_maj, isApproved
-        ) VALUES (?, ?, 0, CURRENT_DATE, 0, ?, ?, CURRENT_DATE, 0)");
+            montant_paye, montant_total, interet_total, assurance_total,
+            date_maj, isApproved
+        ) VALUES (?, ?, 0, CURRENT_DATE, 0, ?, ?, ?, CURRENT_DATE, 0)");
 
         $success = $stmt->execute([
             $data->idTypePret,
             $data->idClient,
-            $C,           // montant_restant : capital sans intérêt
-            $interet      // intérêt total
+            $C,
+            $interet,
+            $assuranceTotale
         ]);
 
         return $success;
@@ -49,6 +56,7 @@ public static function create($data) {
         return ['error' => "Vous n'êtes pas en mesure de souscrire à ce prêt."];
     }
 }
+
 
     public static function findAll() {
         $db = getDB();
@@ -79,7 +87,7 @@ public static function approuver($idPret) {
     $stmt->execute([$idPret]);
 
     // 2. Récupération des infos du prêt
-    $stmt = $db->prepare("SELECT p.*, t.duree_mois_max, t.taux, t.montant
+    $stmt = $db->prepare("SELECT p.*, t.duree_mois_max, t.taux, t.taux_assurance, t.montant
                           FROM EF_Pret_Client p
                           JOIN EF_TypePret t ON p.idTypePret = t.idType
                           WHERE p.idPret = ?");
@@ -91,41 +99,44 @@ public static function approuver($idPret) {
     $duree = $pret['duree_mois_max'];
     $capital = $pret['montant'];
     $taux = $pret['taux'] / 100;
+    $tauxAssurance = $pret['taux_assurance'] / 100;
     $dateDebut = new DateTime($pret['date_debut_pret']);
 
-    // 3. Calcul des valeurs mensuelles (annuité constante)
+    // 3. Calcul des valeurs mensuelles
     $tMensuel = $taux / 12;
     $annuite = round($capital * ($tMensuel / (1 - pow(1 + $tMensuel, -$duree))), 2);
-
+    $assuranceMensuelle = round($capital * $tauxAssurance / $duree, 2);
     $capitalRestant = $capital;
 
     // 4. Préparation de l'insertion
-  $stmtInsert = $db->prepare("INSERT INTO EF_SuiviPret (
-    idPret, idClient, montant_attendu, montant_paye, interet_paye, interet_a_payer,
-    annuite, amortissement,
-    date_debut_pret, date_prevu_payement
-) VALUES (?, ?, ?, 0, 0, ?, ?, ?, ?, ?)");
+    $stmtInsert = $db->prepare("INSERT INTO EF_SuiviPret (
+        idPret, idClient, montant_attendu, montant_paye, interet_paye, interet_a_payer,
+        annuite, amortissement, assurance_a_payer,
+        date_debut_pret, date_prevu_payement
+    ) VALUES (?, ?, ?, 0, 0, ?, ?, ?, ?, ?, ?)");
 
     for ($i = 1; $i <= $duree; $i++) {
-    $datePaiement = clone $dateDebut;
-    $datePaiement->modify("+$i month");
+        $datePaiement = clone $dateDebut;
+        $datePaiement->modify("+$i month");
 
-    $interetMensuel = round($capitalRestant * $tMensuel, 2);
-    $amortissement = round($annuite - $interetMensuel, 2);
+        $interetMensuel = round($capitalRestant * $tMensuel, 2);
+        $amortissement = round($annuite - $interetMensuel, 2);
 
-    $stmtInsert->execute([
-        $idPret,
-        $idClient,
-        $annuite,           // montant_attendu = annuité
-        $interetMensuel,    // interet_a_payer
-        $annuite,           // annuite
-        $amortissement,     // amortissement
-        $dateDebut->format('Y-m-d'),
-        $datePaiement->format('Y-m-d')
-    ]);
+        $stmtInsert->execute([
+            $idPret,
+            $idClient,
+            $annuite + $assuranceMensuelle, // montant_attendu
+            $interetMensuel,                // interet_a_payer
+            $annuite,                       // annuite
+            $amortissement,                // amortissement
+            $assuranceMensuelle,           // assurance_a_payer
+            $dateDebut->format('Y-m-d'),
+            $datePaiement->format('Y-m-d')
+        ]);
 
-    $capitalRestant -= $amortissement;
-}
+        $capitalRestant -= $amortissement;
+    }
+
     return true;
 }
 public static function payerEcheance($idClient, $idPret, $datePaiement) {
@@ -143,7 +154,7 @@ public static function payerEcheance($idClient, $idPret, $datePaiement) {
     // 2. Récupérer la première échéance non payée
     $stmtEch = $db->prepare("
         SELECT * FROM EF_SuiviPret
-        WHERE idClient = ? AND idPret = ? AND montant_paye < montant_attendu
+        WHERE idClient = ? AND idPret = ? AND montant_paye + interet_paye < montant_attendu
         ORDER BY date_prevu_payement ASC LIMIT 1");
     $stmtEch->execute([$idClient, $idPret]);
     $echeance = $stmtEch->fetch(PDO::FETCH_ASSOC);
@@ -152,35 +163,46 @@ public static function payerEcheance($idClient, $idPret, $datePaiement) {
         return ['error' => true, 'message' => 'Aucune échéance à payer'];
     }
 
-    // 3. Calculer les montants à payer
+    // 3. Récupérer les composants de l’échéance
     $amortissement = (float) $echeance['amortissement'];
     $interet = (float) $echeance['interet_a_payer'];
-    $montantTotal = $amortissement + $interet;
+    $assurance = (float) $echeance['assurance_a_payer'];
+    $montantAttendu = (float) $echeance['montant_attendu'];
 
     // 4. Vérifier si le solde est suffisant
-    if ($solde < $montantTotal) {
-        return ['error' => true, 'message' => 'Solde insuffisant pour payer l’échéance (' . $montantTotal . ' MGA requis)'];
+    if ($solde < $montantAttendu) {
+        return ['error' => true, 'message' => "Solde insuffisant pour ce paiement ($montantAttendu MGA requis)"];
     }
 
-    // 5. Déduire du solde du client
+    // 5. Déduire le solde
     $stmtUpdateSolde = $db->prepare("UPDATE Prevision_Client SET montant = montant - ? WHERE idClient = ?");
-    $stmtUpdateSolde->execute([$montantTotal, $idClient]);
+    $stmtUpdateSolde->execute([$montantAttendu, $idClient]);
 
-    // 6. Mettre à jour EF_SuiviPret
+    // 6. Mise à jour de EF_SuiviPret
     $stmtUpdateEch = $db->prepare("
         UPDATE EF_SuiviPret
         SET montant_paye = ?, interet_paye = ?
         WHERE idSuivi = ?");
-    $stmtUpdateEch->execute([$amortissement, $interet, $echeance['idSuivi']]);
+    $stmtUpdateEch->execute([
+        $amortissement + $assurance, // ce que le client rembourse (hors intérêt)
+        $interet,                    // intérêt séparé
+        $echeance['idSuivi']
+    ]);
 
-    // 7. Mettre à jour EF_Pret_Client
+    // 7. Mise à jour du prêt client
     $stmtMajPret = $db->prepare("
         UPDATE EF_Pret_Client
-        SET montant_paye = montant_paye + ?, montant_restant = montant_restant - ?
+        SET montant_paye = montant_paye + ?
         WHERE idPret = ?");
-    $stmtMajPret->execute([$montantTotal, $amortissement, $idPret]);
+    $stmtMajPret->execute([
+        $montantAttendu,  // Total versé ce mois (amortissement + intérêt + assurance)
+        $idPret
+    ]);
 
     return ['error' => false, 'message' => 'Paiement effectué avec succès'];
 }
+
+
+
 
 }

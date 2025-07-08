@@ -365,7 +365,7 @@
           return acc + parseFloat(p.montant_restant || 0) + parseFloat(p.montant_paye || 0);
         }, 0);
         
-        const restantType = types[type].reduce((acc, p) => acc + parseFloat(p.montant_restant || 0), 0);
+        const restantType = types[type].reduce((acc, p) => acc + parseFloat(p.montant_total || 0), 0);
         const progressPercent = totalType > 0 ? ((totalType - restantType) / totalType * 100) : 0;
 
         card.innerHTML = `
