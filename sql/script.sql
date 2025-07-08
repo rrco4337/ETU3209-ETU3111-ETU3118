@@ -34,7 +34,9 @@ CREATE TABLE EF_TypePret (
     taux DECIMAL(5,2) NOT NULL, -- taux d’intérêt en pourcentage
     duree_mois_max INT NOT NULL
 );
-
+ALTER TABLE EF_TypePret ADD COLUMN taux_assurance DECIMAL(5,2) DEFAULT 0;
+ALTER TABLE EF_TypePret ADD COLUMN taux_assurance DECIMAL(5,2) DEFAULT 0;
+Update EF_TypePret set taux_assurance=10;
 -- TABLE : EF_Client
 CREATE TABLE EF_Client (
     idClient INT PRIMARY KEY AUTO_INCREMENT,
@@ -73,6 +75,7 @@ CREATE TABLE EF_Pret_Client (
 ALTER TABLE EF_Pret_Client
 ADD COLUMN isApproved BOOLEAN DEFAULT FALSE;
 ALTER TABLE EF_Pret_Client ADD COLUMN interet_total DECIMAL(12,2) DEFAULT 0;
+ALTER TABLE  EF_Pret_Client ADD COLUMN assurance_total DECIMAL(12,2) DEFAULT 0;
 
 
 CREATE TABLE EF_Departement (
@@ -115,10 +118,3 @@ ALTER TABLE EF_SuiviPret
 ADD COLUMN annuite DECIMAL(12,2) DEFAULT 0,       -- mensualité constante
 ADD COLUMN amortissement DECIMAL(12,2) DEFAULT 0,-- part du capital remboursé
 ADD COLUMN interet_a_payer DECIMAL(12,2) DEFAULT 0;
-
-INSERT INTO EF_Pret_Client (idTypePret, idClient, status, date_debut_pret, montant_paye, montant_total, date_maj, isApproved, interet_total) VALUES 
-(6, 1, 1, '2025-07-01', 500000.00, 1000000.00, '2025-07-08', 1, 100000.00),
-(7, 2, 1, '2025-06-20', 250000.00, 750000.00, '2025-07-08', 1, 75000.00),
-(7, 3, 1, '2025-05-15', 600000.00, 600000.00, '2025-07-08', 1, 50000.00),
-(8, 4, 1, '2025-04-10', 100000.00, 800000.00, '2025-07-08', 1, 80000.00);
-
