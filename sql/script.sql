@@ -2,26 +2,8 @@ CREATE DATABASE tp_flight CHARACTER SET utf8mb4;
 
 USE tp_flight;
 
-<<<<<<< HEAD
-=======
 
->>>>>>> ae2b1d9f1050fce99c47b39d96b33d8f2b42d085
--- CREATE TABLE etudiant (
---     id INT AUTO_INCREMENT PRIMARY KEY,
---     nom VARCHAR(100),
---     prenom VARCHAR(100),
---     email VARCHAR(100),
---     age INT
--- );
-
--- ============================
--- SCHEMA : Gestion de prêts
--- ============================
-
--- TABLE : EF_Fond_Financier
--- TABLE : EF_Fond_Financier
 CREATE TABLE EF_Fond_Financier (
-<<<<<<< HEAD
     idFond INT NOT NULL AUTO_INCREMENT,
     date_creation DATE DEFAULT CURRENT_DATE,
     annee INT GENERATED ALWAYS AS (YEAR(date_creation)) STORED, -- calculé à partir de la date
@@ -31,15 +13,6 @@ CREATE TABLE EF_Fond_Financier (
     PRIMARY KEY (idFond),
     INDEX idx_annee (annee) -- facultatif mais utile
 );
-=======
-    idFond INT PRIMARY KEY AUTO_INCREMENT,
-    solde_initiale DECIMAL(12,2) NOT NULL DEFAULT 0,
-    solde_final DECIMAL(12,2) DEFAULT 0,
-    solde_en_cours DECIMAL(12,2) DEFAULT 0,
-    date_creation DATE DEFAULT CURRENT_DATE
-);
-
->>>>>>> ae2b1d9f1050fce99c47b39d96b33d8f2b42d085
 -- TABLE : EF_TypePret
 CREATE TABLE EF_TypePret (
     idType INT PRIMARY KEY AUTO_INCREMENT,
@@ -54,19 +27,13 @@ CREATE TABLE EF_Client (
     idClient INT PRIMARY KEY AUTO_INCREMENT,
     nom VARCHAR(100) NOT NULL,
     mail VARCHAR(100),
-    password VARCHAR(50),
     datenaissance DATE,
     profession VARCHAR(100),
     salaire_actuel DECIMAL(12,2) DEFAULT 0,
     adresse VARCHAR(255),
     photo_client VARCHAR(255),
-    telephone VARCHAR(20),
-     solde DECIMAL(12,2) DEFAULT 0
+    telephone VARCHAR(20)
 );
-
-   
-
-
 
 -- TABLE : Prevision_Client
 CREATE TABLE Prevision_Client (
@@ -83,15 +50,17 @@ CREATE TABLE EF_Pret_Client (
     status INT DEFAULT 0 CHECK (status IN (0, 1, 2, 3, 4)),
     date_debut_pret DATE DEFAULT CURRENT_DATE,
     montant_paye DECIMAL(12,2) DEFAULT 0,
-    montant_restant DECIMAL(12,2) DEFAULT 0,
+    montant_total DECIMAL(12,2) DEFAULT 0,
     date_maj DATE DEFAULT CURRENT_DATE,
     FOREIGN KEY (idTypePret) REFERENCES EF_TypePret(idType),
     FOREIGN KEY (idClient) REFERENCES EF_Client(idClient)
 );
 ALTER TABLE EF_Pret_Client
 ADD COLUMN isApproved BOOLEAN DEFAULT FALSE;
+ALTER TABLE EF_Pret_Client ADD COLUMN interet_total DECIMAL(12,2) DEFAULT 0;
 
-CREATE TABLE Departement (
+
+CREATE TABLE EF_Departement (
     idDepartement INT PRIMARY KEY AUTO_INCREMENT,  -- identifiant unique pour le département
     NomDepartement VARCHAR(255) NOT NULL  -- nom du département (ex: Finance)
 );
@@ -103,28 +72,27 @@ CREATE TABLE EF_Admin (
 );
 ALTER TABLE EF_Admin
 ADD COLUMN idDepartement INT,
-ADD CONSTRAINT fk_departement_admin FOREIGN KEY (idDepartement) REFERENCES Departement(idDepartement);
+ADD CONSTRAINT fk_departement_admin FOREIGN KEY (idDepartement) REFERENCES EF_Departement(idDepartement);
 
 
-INSERT INTO Departement (NomDepartement) VALUES
+INSERT INTO EF_Departement (NomDepartement) VALUES
 ('Finance'),
 ('Commercial');
 
 
-<<<<<<< HEAD
+
+
 insert into EF_Admin(mail,motdepasse) values('admin@gmail.com','admin');
-=======
-INSERT INTO EF_Client (nom, mail, password, datenaissance, profession, salaire_actuel, adresse, telephone, solde)
-VALUES 
-('Martin', 'elise.martin@email.com',
- '123',
- '1995-08-14', 'Graphiste', 38000.00, '25 Rue des Arts, 75003 Paris', '+33611223344', 1250.50);
 
-('Lucas Dupont', 'lucas.dupont@email.com',
- '$2y$10$ZIjhfEsH3OVyV1fpUTufG.yElcWWNKIkZAPBoTeZWkznkH1H6LG9C',
- '1990-06-21', 'Développeur', 45000.00, '12 Avenue des Champs, 75008 Paris', '+33699887766', 2450.00),
-
-('Sophie Bernard', 'sophie.bernard@email.com',
- '$2y$10$ZIjhfEsH3OVyV1fpUTufG.yElcWWNKIkZAPBoTeZWkznkH1H6LG9C',
- '1988-03-10', 'Comptable', 42000.00, '7 Rue Lafayette, 69001 Lyon', '+33712345678', 980.75);
-
+CREATE TABLE EF_SuiviPret (
+    idSuivi INT AUTO_INCREMENT PRIMARY KEY,
+    idPret INT NOT NULL,
+    idClient INT NOT NULL,
+    montant_attendu DECIMAL(12,2) NOT NULL, -- montant dû à cette échéance (avec intérêt)
+    montant_paye DECIMAL(12,2) DEFAULT 0,   -- montant payé à cette échéance
+    interet_paye DECIMAL(12,2) DEFAULT 0,   -- part d'intérêt remboursée
+    date_debut_pret DATE NOT NULL,
+    date_prevu_payement DATE NOT NULL,
+    FOREIGN KEY (idPret) REFERENCES EF_Pret_Client(idPret),
+    FOREIGN KEY (idClient) REFERENCES EF_Client(idClient)
+);

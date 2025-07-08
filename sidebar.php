@@ -96,8 +96,8 @@
               <a href="TypePretConfig.php" class="block px-4 py-2 hover:bg-blue-50 hover:text-blue-600">
                 <i class="fas fa-piggy-bank mr-2"></i> Type prêt financier
               </a>
-              <a href="FondFinancierConfig.php" class="block px-4 py-2 hover:bg-blue-50 hover:text-blue-600">
-                <i class="fas fa-coins mr-2"></i> fond financier
+              <a href="Simulation.php" class="block px-4 py-2 hover:bg-blue-50 hover:text-blue-600">
+                <i class="fas fa-coins mr-2"></i> simulation de prêt
               </a>
               <a href="AddPret.php" class="block px-4 py-2 hover:bg-blue-50 hover:text-blue-600">
                 <i class="fas fa-business-time mr-2"></i> Gestion des prêts
