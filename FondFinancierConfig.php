@@ -139,7 +139,6 @@
               <tr>
                 <th class="bg-gray-50">Année</th>
                 <th class="bg-gray-50">Solde Initial</th>
-                <th class="bg-gray-50">Solde Final</th>
                 <th class="bg-gray-50">Solde en Cours</th>
                 <th class="bg-gray-50">Date de Création</th>
               </tr>
@@ -214,7 +213,7 @@
         const tbody = document.getElementById("table-fond");
         tbody.innerHTML = "";
         
-        let totalFonds = 0;
+        let totalFonds = 1;
         
         fonds.forEach(f => {
           const row = document.createElement("tr");
@@ -222,7 +221,6 @@
           row.innerHTML = `
             <td class="font-semibold">${f.annee}</td>
             <td>${formatMoney(f.solde_initiale)}</td>
-            <td class="${f.solde_final >= 0 ? 'solde-positive' : 'solde-negative'}">${formatMoney(f.solde_final || 0)}</td>
             <td class="${f.solde_en_cours >= 0 ? 'solde-positive' : 'solde-negative'}">${formatMoney(f.solde_en_cours || 0)}</td>
             <td>${formatDate(f.date_creation)}</td>
           `;
