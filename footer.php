@@ -18,9 +18,9 @@
         </div> 
         <div>
             <span class="footer-title">Contact</span> 
-            <a class="link link-hover">Service client: 0800 123 456</a> 
-            <a class="link link-hover">Urgences: 0800 987 654</a> 
-            <a class="link link-hover">contact@horizon-banque.fr</a>
+            <a class="link link-hover">CindyETU3209 </a> 
+            <a class="link link-hover">Fanintsy ET3111</a> 
+            <a class="link link-hover">Stanley ETU3118</a>
         </div> 
         <div>
             <span class="footer-title">Légal</span> 

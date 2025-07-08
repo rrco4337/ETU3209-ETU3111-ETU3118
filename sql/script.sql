@@ -19,12 +19,23 @@ USE tp_flight;
 CREATE TABLE EF_Fond_Financier (
     idFond INT NOT NULL AUTO_INCREMENT,
     date_creation DATE DEFAULT CURRENT_DATE,
-    annee INT GENERATED ALWAYS AS (YEAR(date_creation)) STORED, -- calculé à partir de la date
+
+    -- Colonnes générées pour regrouper par mois et année
+    mois INT GENERATED ALWAYS AS (MONTH(date_creation)) STORED,
+    annee INT GENERATED ALWAYS AS (YEAR(date_creation)) STORED,
+
     solde_initiale DECIMAL(12,2) NOT NULL DEFAULT 0,
     solde_final DECIMAL(12,2) DEFAULT 0,
-    solde_en_cours DECIMAL(12,2) GENERATED ALWAYS AS (solde_initiale - solde_final) STORED, -- calculé
+
+    -- Solde en cours = initial - final
+    solde_en_cours DECIMAL(12,2) GENERATED ALWAYS AS (solde_initiale - solde_final) STORED,
+
     PRIMARY KEY (idFond),
-    INDEX idx_annee (annee) -- facultatif mais utile
+    
+    -- Index utiles pour regroupements par mois et année
+    INDEX idx_annee (annee),
+    INDEX idx_mois (mois),
+    INDEX idx_annee_mois (annee, mois)
 );
 -- TABLE : EF_TypePret
 CREATE TABLE EF_TypePret (

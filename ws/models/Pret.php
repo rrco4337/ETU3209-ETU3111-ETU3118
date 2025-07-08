@@ -36,7 +36,7 @@ public static function create($data) {
     $isApproved = ($capacite >= $total_a_rembourser) ? 1 : 0;
 
     if ($isApproved) {
-         file_put_contents("log.txt", "Capacité: $capacite\nTotal: $total_a_rembourser\n", FILE_APPEND);
+       
         $stmt = $db->prepare("INSERT INTO EF_Pret_Client (
             idTypePret, idClient, status, date_debut_pret,
             montant_paye, montant_total, interet_total, assurance_total,
@@ -79,14 +79,20 @@ public static function create($data) {
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
-public static function approuver($idPret) {
+public static function approuver($idPret, $delaiMois) {
     $db = getDB();
+  file_put_contents("log.txt", "Capacité: $delaiMois", FILE_APPEND);
+    // Validation du délai
+    $delaiMois = (int)$delaiMois;
+    if ($delaiMois < 0 || $delaiMois > 6) {
+        throw new Exception("Le délai doit être compris entre 0 et 6 mois");
+    }
 
-    // 1. Approuver le prêt
+    // 1. Marquer le prêt comme approuvé
     $stmt = $db->prepare("UPDATE EF_Pret_Client SET isApproved = 1 WHERE idPret = ?");
     $stmt->execute([$idPret]);
 
-    // 2. Récupération des infos du prêt
+    // 2. Récupérer les infos nécessaires
     $stmt = $db->prepare("SELECT p.*, t.duree_mois_max, t.taux, t.taux_assurance, t.montant
                           FROM EF_Pret_Client p
                           JOIN EF_TypePret t ON p.idTypePret = t.idType
@@ -98,17 +104,27 @@ public static function approuver($idPret) {
     $idClient = $pret['idClient'];
     $duree = $pret['duree_mois_max'];
     $capital = $pret['montant'];
+
+
+$stmtUpdateFond = $db->prepare("
+    UPDATE EF_Fond_Financier
+    SET solde_initiale = solde_initiale - ?
+    WHERE mois = MONTH(?) AND annee = YEAR(?)");
+$stmtUpdateFond->execute([$capital, $dateDebut, $dateDebut]);
+
     $taux = $pret['taux'] / 100;
     $tauxAssurance = $pret['taux_assurance'] / 100;
-    $dateDebut = new DateTime($pret['date_debut_pret']);
 
-    // 3. Calcul des valeurs mensuelles
+    $dateDebut = new DateTime($pret['date_debut_pret']);
+    $dateDebut->modify("+$delaiMois months");
+
+    // 3. Calcul des mensualités
     $tMensuel = $taux / 12;
     $annuite = round($capital * ($tMensuel / (1 - pow(1 + $tMensuel, -$duree))), 2);
     $assuranceMensuelle = round($capital * $tauxAssurance / $duree, 2);
     $capitalRestant = $capital;
 
-    // 4. Préparation de l'insertion
+    // 4. Insertion dans EF_SuiviPret
     $stmtInsert = $db->prepare("INSERT INTO EF_SuiviPret (
         idPret, idClient, montant_attendu, montant_paye, interet_paye, interet_a_payer,
         annuite, amortissement, assurance_a_payer,
@@ -125,11 +141,11 @@ public static function approuver($idPret) {
         $stmtInsert->execute([
             $idPret,
             $idClient,
-            $annuite + $assuranceMensuelle, // montant_attendu
-            $interetMensuel,                // interet_a_payer
-            $annuite,                       // annuite
-            $amortissement,                // amortissement
-            $assuranceMensuelle,           // assurance_a_payer
+            $annuite + $assuranceMensuelle,
+            $interetMensuel,
+            $annuite,
+            $amortissement,
+            $assuranceMensuelle,
             $dateDebut->format('Y-m-d'),
             $datePaiement->format('Y-m-d')
         ]);
@@ -139,6 +155,7 @@ public static function approuver($idPret) {
 
     return true;
 }
+
 public static function payerEcheance($idClient, $idPret, $datePaiement) {
     $db = getDB();
 
@@ -174,7 +191,7 @@ public static function payerEcheance($idClient, $idPret, $datePaiement) {
         return ['error' => true, 'message' => "Solde insuffisant pour ce paiement ($montantAttendu MGA requis)"];
     }
 
-    // 5. Déduire le solde
+    // 5. Déduire le solde du client
     $stmtUpdateSolde = $db->prepare("UPDATE Prevision_Client SET montant = montant - ? WHERE idClient = ?");
     $stmtUpdateSolde->execute([$montantAttendu, $idClient]);
 
@@ -199,9 +216,23 @@ public static function payerEcheance($idClient, $idPret, $datePaiement) {
         $idPret
     ]);
 
+    // ---- Nouvelle étape : Mise à jour du solde dans EF_Fond_Financier ----
+    // Extraire mois et année de la date de paiement prévu
+    $datePrevu = new DateTime($echeance['date_prevu_payement']);
+    $mois = (int)$datePrevu->format('m');
+    $annee = (int)$datePrevu->format('Y');
+
+    // Mettre à jour le solde_final dans EF_Fond_Financier pour ce mois et année
+    $montantAPayer = $amortissement + $interet + $assurance;
+
+    $stmtUpdateFond = $db->prepare("
+        UPDATE EF_Fond_Financier
+        SET solde_final = solde_final + ?
+        WHERE mois = ? AND annee = ?");
+    $stmtUpdateFond->execute([$montantAPayer, $mois, $annee]);
+
     return ['error' => false, 'message' => 'Paiement effectué avec succès'];
 }
-
 
 
 

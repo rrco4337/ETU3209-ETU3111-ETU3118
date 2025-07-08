@@ -24,7 +24,22 @@ public static function getInteretsParMois($moisDebut, $anneeDebut, $moisFin, $an
     $stmt->execute([$dateDebut, $dateFin]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
-
+  public static function getRemboursementsParMois($dateDebut, $dateFin) {
+        $db = getDB();
+        $stmt = $db->prepare("
+            SELECT
+                YEAR(date_prevu_payement) AS annee,
+                MONTH(date_prevu_payement) AS mois,
+                SUM(montant_paye + interet_paye) AS total_remboursements
+            FROM EF_SuiviPret
+            WHERE date_prevu_payement BETWEEN ? AND ?
+            GROUP BY annee, mois
+            ORDER BY annee, mois
+        ");
+        $stmt->execute([$dateDebut, $dateFin]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
+
 
 ?>

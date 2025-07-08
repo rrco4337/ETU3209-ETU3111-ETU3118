@@ -7,8 +7,8 @@ class FondFinancierController {
         Flight::json($fonds);
     }
 
-    public static function getByAnnee($annee) {
-        $fond = FondFinancier::findByAnnee($annee);
+    public static function getByMoisAnnee($mois,$annee) {
+        $fond = FondFinancier::findByMoisAnnee($mois,$annee);
         Flight::json($fond);
     }
 
@@ -18,4 +18,7 @@ class FondFinancierController {
         FondFinancier::create($data);
         Flight::json(['message' => 'Fond financier ajouté ou mis à jour']);
     }
+
+ 
+
 }

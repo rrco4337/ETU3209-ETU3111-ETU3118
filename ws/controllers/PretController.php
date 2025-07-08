@@ -20,14 +20,40 @@ class PretController {
     $prets = Pret::findNonApproved();
     Flight::json($prets);
 }
-    public static function approuver($idPret) {
-        $result = Pret::approuver($idPret);
-        if ($result) {
-            Flight::json(['message' => 'Prêt approuvé avec succès']);
-        } else {
-            Flight::halt(500, json_encode(['message' => 'Erreur lors de l’approbation du prêt']));
+   public static function approuver($idPret) {
+    try {
+        // Lire les données brutes du corps
+        parse_str(Flight::request()->getBody(), $bodyData);
+
+        $delai = isset($bodyData['delai']) ? (int)$bodyData['delai'] : 0;
+
+        if ($delai < 0 || $delai > 6) {
+            Flight::halt(400, json_encode([
+                'message' => 'Le délai doit être compris entre 0 et 6 mois'
+            ]));
+            return;
         }
+
+        $result = Pret::approuver($idPret, $delai);
+
+        if ($result) {
+            Flight::json([
+                'message' => 'Prêt approuvé avec succès',
+                'delai_applique' => $delai
+            ]);
+        } else {
+            Flight::halt(500, json_encode([
+                'message' => 'Erreur lors de l\'approbation du prêt'
+            ]));
+        }
+
+    } catch (Exception $e) {
+        Flight::halt(500, json_encode([
+            'message' => 'Erreur: ' . $e->getMessage()
+        ]));
     }
+}
+
      public static function payer() {
          
 

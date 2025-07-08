@@ -47,7 +47,7 @@
                         <label class="label" for="mail">
                             <span class="label-text text-gray-700 font-medium">Email</span>
                         </label>
-                        <input type="email" id="mail" name="mail" placeholder="Entrez votre email" 
+                        <input type="email" id="mail" name="mail" placeholder="Admin@gmail.com" 
                                class="input input-bordered w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
                     </div>
                     
@@ -55,7 +55,7 @@
                         <label class="label" for="motdepasse">
                             <span class="label-text text-gray-700 font-medium">Mot de passe</span>
                         </label>
-                        <input type="password" id="motdepasse" name="motdepasse" placeholder="••••••••" 
+                        <input type="password" id="motdepasse" name="motdepasse" placeholder="admin" 
                                class="input input-bordered w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
                     </div>
                     

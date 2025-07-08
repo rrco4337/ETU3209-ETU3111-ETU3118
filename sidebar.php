@@ -102,6 +102,9 @@
               <a href="AddPret.php" class="block px-4 py-2 hover:bg-blue-50 hover:text-blue-600">
                 <i class="fas fa-business-time mr-2"></i> Gestion des prêts
               </a>
+                <a href="ListePretNoApprouve.php" class="block px-4 py-2 hover:bg-blue-50 hover:text-blue-600">
+                <i class="fas fa-business-time mr-2"></i>Validation Pret
+              </a>
             </div>
           </div>
           
@@ -117,8 +120,8 @@
             </div>
           </div>
           
-          <a href="#" class="nav-link flex items-center">
-            <i class="fas fa-credit-card mr-2"></i> Cartes
+          <a href="InteretParMois.php" class="nav-link flex items-center">
+            <i class="fas fa-credit-card mr-2"></i> Interet par mois
           </a>
           
           <a href="#" class="nav-link flex items-center">

@@ -47,7 +47,7 @@
                         <label class="label" for="nom">
                             <span class="label-text text-gray-700 font-medium">Nom d'utilisateur</span>
                         </label>
-                        <input type="text" id="nom" placeholder="Entrez votre nom d'utilisateur" 
+                        <input type="text" id="nom" placeholder="Ando Rabe" 
                                class="input input-bordered w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
                     </div>
                     
@@ -55,7 +55,7 @@
                         <label class="label" for="password">
                             <span class="label-text text-gray-700 font-medium">Mot de passe</span>
                         </label>
-                        <input type="password" id="password" placeholder="••••••••" 
+                        <input type="password" id="password" placeholder="123" 
                                class="input input-bordered w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
                     </div>
                     
