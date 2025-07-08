@@ -84,41 +84,36 @@
 
         <!-- Menu Principal -->
         <div class="flex space-x-2">
-          <a href="#" class="nav-link active flex items-center">
+          <a href="index.php" class="nav-link active flex items-center">
             <i class="fas fa-home mr-2"></i> Accueil
           </a>
           
           <div class="dropdown relative">
             <a href="#" class="nav-link flex items-center">
-              <i class="fas fa-user mr-2"></i> Comptes <i class="fas fa-chevron-down ml-1 text-xs"></i>
+              <i class="fas fa-hand-holding-usd mr-2"></i> Prêt <i class="fas fa-chevron-down ml-1 text-xs"></i>
             </a>
             <div class="dropdown-menu absolute left-0 mt-2 w-48 bg-white text-gray-800 rounded-md shadow-xl py-1 z-50">
               <a href="TypePretConfig.php" class="block px-4 py-2 hover:bg-blue-50 hover:text-blue-600">
                 <i class="fas fa-piggy-bank mr-2"></i> Type prêt financier
               </a>
-              <a href="FondFinancierConfig.php" class="block px-4 py-2 hover:bg-blue-50 hover:text-blue-600">
-                <i class="fas fa-coins mr-2"></i> fond financier
+              <a href="Simulation.php" class="block px-4 py-2 hover:bg-blue-50 hover:text-blue-600">
+                <i class="fas fa-coins mr-2"></i> simulation de prêt
               </a>
-              <a href="#" class="block px-4 py-2 hover:bg-blue-50 hover:text-blue-600">
-                <i class="fas fa-business-time mr-2"></i> Comptes Professionnels
+              <a href="AddPret.php" class="block px-4 py-2 hover:bg-blue-50 hover:text-blue-600">
+                <i class="fas fa-business-time mr-2"></i> Gestion des prêts
               </a>
             </div>
           </div>
           
           <div class="dropdown relative">
-            <a href="#" class="nav-link flex items-center">
-              <i class="fas fa-hand-holding-usd mr-2"></i> Prêts <i class="fas fa-chevron-down ml-1 text-xs"></i>
+            <a href="FondFinancierConfig.php" class="nav-link flex items-center">
+              <i class="fas fa-coins mr-2"></i> Font financier <i class="fas fa-chevron-down ml-1 text-xs"></i>
             </a>
             <div class="dropdown-menu absolute left-0 mt-2 w-48 bg-white text-gray-800 rounded-md shadow-xl py-1 z-50">
-              <a href="#" class="block px-4 py-2 hover:bg-blue-50 hover:text-blue-600">
-                <i class="fas fa-home mr-2"></i> Immobiliers
+              <a href="FondFinancierConfig.php" class="block px-4 py-2 hover:bg-blue-50 hover:text-blue-600">
+                <i class="fas fa-home mr-2"></i> rajouter font financier
               </a>
-              <a href="#" class="block px-4 py-2 hover:bg-blue-50 hover:text-blue-600">
-                <i class="fas fa-car mr-2"></i> Automobiles
-              </a>
-              <a href="#" class="block px-4 py-2 hover:bg-blue-50 hover:text-blue-600">
-                <i class="fas fa-user mr-2"></i> Personnels
-              </a>
+             
             </div>
           </div>
           
