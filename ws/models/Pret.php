@@ -140,7 +140,7 @@ public static function payerEcheance($idClient, $idPret, $datePaiement) {
         return ['error' => true, 'message' => 'Solde insuffisant'];
     }
 
-    // 2. Trouver la première échéance non payée (la plus ancienne)
+    // 2. Récupérer la première échéance non payée
     $stmtEch = $db->prepare("
         SELECT * FROM EF_SuiviPret
         WHERE idClient = ? AND idPret = ? AND montant_paye < montant_attendu
@@ -152,36 +152,35 @@ public static function payerEcheance($idClient, $idPret, $datePaiement) {
         return ['error' => true, 'message' => 'Aucune échéance à payer'];
     }
 
-    $montantAPayer = (float) $echeance['montant_attendu'];
+    // 3. Calculer les montants à payer
+    $amortissement = (float) $echeance['amortissement'];
+    $interet = (float) $echeance['interet_a_payer'];
+    $montantTotal = $amortissement + $interet;
 
-    // 3. Vérifier si le solde est suffisant
-    if ($solde < $montantAPayer) {
-        return ['error' => true, 'message' => 'Solde insuffisant pour ce paiement'];
+    // 4. Vérifier si le solde est suffisant
+    if ($solde < $montantTotal) {
+        return ['error' => true, 'message' => 'Solde insuffisant pour payer l’échéance (' . $montantTotal . ' MGA requis)'];
     }
 
-    // 4. Déduire du solde
-    $nouveauSolde = $solde - $montantAPayer;
-    $stmtUpdateSolde = $db->prepare("UPDATE Prevision_Client SET montant = ? WHERE idClient = ?");
-    $stmtUpdateSolde->execute([$nouveauSolde, $idClient]);
+    // 5. Déduire du solde du client
+    $stmtUpdateSolde = $db->prepare("UPDATE Prevision_Client SET montant = montant - ? WHERE idClient = ?");
+    $stmtUpdateSolde->execute([$montantTotal, $idClient]);
 
-    // 5. Mettre à jour la ligne échéance avec montant payé et intérêt payé
+    // 6. Mettre à jour EF_SuiviPret
     $stmtUpdateEch = $db->prepare("
         UPDATE EF_SuiviPret
-        SET montant_paye = montant_attendu,
-            interet_paye = interet_a_payer
+        SET montant_paye = ?, interet_paye = ?
         WHERE idSuivi = ?");
-    $stmtUpdateEch->execute([$echeance['idSuivi']]);
+    $stmtUpdateEch->execute([$amortissement, $interet, $echeance['idSuivi']]);
 
-    // 6. Mettre à jour le montant payé total dans EF_Pret_Client
+    // 7. Mettre à jour EF_Pret_Client
     $stmtMajPret = $db->prepare("
         UPDATE EF_Pret_Client
-        SET montant_paye = montant_paye + ?
+        SET montant_paye = montant_paye + ?, montant_restant = montant_restant - ?
         WHERE idPret = ?");
-    $stmtMajPret->execute([$montantAPayer, $idPret]);
+    $stmtMajPret->execute([$montantTotal, $amortissement, $idPret]);
 
     return ['error' => false, 'message' => 'Paiement effectué avec succès'];
 }
-
-
 
 }
