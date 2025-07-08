@@ -29,7 +29,7 @@
   xhr.send(data);
 }
 function chargerClients() {
-  ajax("GET", "/client", null, data => {
+  ajax("GET", "/clients", null, data => {
     const select = document.getElementById("idClient");
     data.forEach(c => {
       select.innerHTML += `<option value="${c.idClient}">${c.nom}</option>`;

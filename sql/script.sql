@@ -47,6 +47,8 @@ CREATE TABLE EF_Client (
     photo_client VARCHAR(255),
     telephone VARCHAR(20)
 );
+ALTER TABLE EF_Client ADD COLUMN password VARCHAR(50) DEFAULT ' ';
+
 
 -- TABLE : Prevision_Client
 CREATE TABLE Prevision_Client (
@@ -109,3 +111,7 @@ CREATE TABLE EF_SuiviPret (
     FOREIGN KEY (idPret) REFERENCES EF_Pret_Client(idPret),
     FOREIGN KEY (idClient) REFERENCES EF_Client(idClient)
 );
+ALTER TABLE EF_SuiviPret
+ADD COLUMN annuite DECIMAL(12,2) DEFAULT 0,       -- mensualité constante
+ADD COLUMN amortissement DECIMAL(12,2) DEFAULT 0,-- part du capital remboursé
+ADD COLUMN interet_a_payer DECIMAL(12,2) DEFAULT 0;

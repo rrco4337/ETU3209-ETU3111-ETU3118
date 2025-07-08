@@ -78,7 +78,7 @@ public static function approuver($idPret) {
     $stmt = $db->prepare("UPDATE EF_Pret_Client SET isApproved = 1 WHERE idPret = ?");
     $stmt->execute([$idPret]);
 
-    // 2. Récupération des infos
+    // 2. Récupération des infos du prêt
     $stmt = $db->prepare("SELECT p.*, t.duree_mois_max, t.taux, t.montant
                           FROM EF_Pret_Client p
                           JOIN EF_TypePret t ON p.idTypePret = t.idType
@@ -91,36 +91,97 @@ public static function approuver($idPret) {
     $duree = $pret['duree_mois_max'];
     $capital = $pret['montant'];
     $taux = $pret['taux'] / 100;
-
-    // Recalcul de l'intérêt total (au cas où il n'est pas encore stocké)
-    $interetTotal = $capital * $taux * ($duree / 12);
-    $montantTotal = $capital + $interetTotal;
-
-    $mensualite = round($montantTotal / $duree, 2);
-    $interetMensuel = round($interetTotal / $duree, 2);
-
     $dateDebut = new DateTime($pret['date_debut_pret']);
 
-    // 3. Insertion des échéances
-    $stmtInsert = $db->prepare("INSERT INTO EF_SuiviPret (
-        idPret, idClient, montant_attendu, montant_paye, interet_paye, date_debut_pret, date_prevu_payement
-    ) VALUES (?, ?, ?, 0, ?, ?, ?)");
+    // 3. Calcul des valeurs mensuelles (annuité constante)
+    $tMensuel = $taux / 12;
+    $annuite = round($capital * ($tMensuel / (1 - pow(1 + $tMensuel, -$duree))), 2);
+
+    $capitalRestant = $capital;
+
+    // 4. Préparation de l'insertion
+  $stmtInsert = $db->prepare("INSERT INTO EF_SuiviPret (
+    idPret, idClient, montant_attendu, montant_paye, interet_paye, interet_a_payer,
+    annuite, amortissement,
+    date_debut_pret, date_prevu_payement
+) VALUES (?, ?, ?, 0, 0, ?, ?, ?, ?, ?)");
 
     for ($i = 1; $i <= $duree; $i++) {
-        $datePaiement = clone $dateDebut;
-        $datePaiement->modify("+$i month");
+    $datePaiement = clone $dateDebut;
+    $datePaiement->modify("+$i month");
 
-        $stmtInsert->execute([
-            $idPret,
-            $idClient,
-            $mensualite,
-            $interetMensuel,
-            $dateDebut->format('Y-m-d'),
-            $datePaiement->format('Y-m-d')
-        ]);
-    }
+    $interetMensuel = round($capitalRestant * $tMensuel, 2);
+    $amortissement = round($annuite - $interetMensuel, 2);
 
+    $stmtInsert->execute([
+        $idPret,
+        $idClient,
+        $annuite,           // montant_attendu = annuité
+        $interetMensuel,    // interet_a_payer
+        $annuite,           // annuite
+        $amortissement,     // amortissement
+        $dateDebut->format('Y-m-d'),
+        $datePaiement->format('Y-m-d')
+    ]);
+
+    $capitalRestant -= $amortissement;
+}
     return true;
 }
+public static function payerEcheance($idClient, $idPret, $datePaiement) {
+    $db = getDB();
+
+    // 1. Récupérer le solde du client
+    $stmtSolde = $db->prepare("SELECT montant FROM Prevision_Client WHERE idClient = ?");
+    $stmtSolde->execute([$idClient]);
+    $solde = (float) $stmtSolde->fetchColumn();
+
+    if ($solde <= 0) {
+        return ['error' => true, 'message' => 'Solde insuffisant'];
+    }
+
+    // 2. Trouver la première échéance non payée (la plus ancienne)
+    $stmtEch = $db->prepare("
+        SELECT * FROM EF_SuiviPret
+        WHERE idClient = ? AND idPret = ? AND montant_paye < montant_attendu
+        ORDER BY date_prevu_payement ASC LIMIT 1");
+    $stmtEch->execute([$idClient, $idPret]);
+    $echeance = $stmtEch->fetch(PDO::FETCH_ASSOC);
+
+    if (!$echeance) {
+        return ['error' => true, 'message' => 'Aucune échéance à payer'];
+    }
+
+    $montantAPayer = (float) $echeance['montant_attendu'];
+
+    // 3. Vérifier si le solde est suffisant
+    if ($solde < $montantAPayer) {
+        return ['error' => true, 'message' => 'Solde insuffisant pour ce paiement'];
+    }
+
+    // 4. Déduire du solde
+    $nouveauSolde = $solde - $montantAPayer;
+    $stmtUpdateSolde = $db->prepare("UPDATE Prevision_Client SET montant = ? WHERE idClient = ?");
+    $stmtUpdateSolde->execute([$nouveauSolde, $idClient]);
+
+    // 5. Mettre à jour la ligne échéance avec montant payé et intérêt payé
+    $stmtUpdateEch = $db->prepare("
+        UPDATE EF_SuiviPret
+        SET montant_paye = montant_attendu,
+            interet_paye = interet_a_payer
+        WHERE idSuivi = ?");
+    $stmtUpdateEch->execute([$echeance['idSuivi']]);
+
+    // 6. Mettre à jour le montant payé total dans EF_Pret_Client
+    $stmtMajPret = $db->prepare("
+        UPDATE EF_Pret_Client
+        SET montant_paye = montant_paye + ?
+        WHERE idPret = ?");
+    $stmtMajPret->execute([$montantAPayer, $idPret]);
+
+    return ['error' => false, 'message' => 'Paiement effectué avec succès'];
+}
+
+
 
 }

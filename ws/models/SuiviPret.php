@@ -24,6 +24,7 @@ public static function getInteretsParMois($moisDebut, $anneeDebut, $moisFin, $an
     $stmt->execute([$dateDebut, $dateFin]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
 }
 
 ?>
